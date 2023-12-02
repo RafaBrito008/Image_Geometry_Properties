@@ -1,73 +1,76 @@
 import tkinter as tk
 from tkinter import filedialog
+from PIL import Image, ImageTk
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from PIL import ImageTk, Image
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-def cargar_y_procesar_imagen():
-    ruta_imagen = filedialog.askopenfilename(
-        filetypes=(
-            ("Archivos de imagen", "*.jpg;*.png;*.jpeg"),
-            ("Todos los archivos", "*.*"),
-        )
-    )
-    if ruta_imagen:
-        img = cv2.imread(ruta_imagen)
+class ImageProcessorApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Procesador de Imágenes")
+        self.image_path = None
+        self.setup_ui()
 
-        # Convertir la imagen a escala de grises
+    def setup_ui(self):
+        self.frame = tk.Frame(self.root)
+        self.frame.pack(padx=10, pady=10)
+
+        self.button_load = tk.Button(self.frame, text="Cargar Imagen", command=self.load_image)
+        self.button_load.pack(side=tk.TOP, pady=5)
+
+        self.canvas = tk.Canvas(self.root, width=600, height=600)
+        self.canvas.pack()
+
+    def load_image(self):
+        self.image_path = filedialog.askopenfilename(filetypes=[("Archivos de imagen", "*.jpg;*.png;*.jpeg")])
+        if self.image_path:
+            self.process_image()
+
+    def process_image(self):
+        img = cv2.imread(self.image_path)
+
         imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-        # Binarizar la imagen
         _, imBn = cv2.threshold(imgGray, 128, 255, cv2.THRESH_BINARY)
-
-        # Invertir la imagen binaria
         imBn = cv2.bitwise_not(imBn)
-
-        # Encontrar contornos
         contornos, _ = cv2.findContours(imBn, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-        # Ordenar contornos por área en orden descendente
         contornos = sorted(contornos, key=cv2.contourArea, reverse=True)
-
-        # Tomar hasta un máximo de 5 objetos
         numObjetosMostrados = min(5, len(contornos))
 
-        # Mostrar la imagen original
-        plt.subplot(2, 2, 1)
-        plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-        plt.title('Imagen Original')
+        fig, axs = plt.subplots(2, 2)
 
-        # Mostrar la imagen binaria con contornos
-        plt.subplot(2, 2, 2)
-        plt.imshow(imBn, cmap='gray')
+        axs[0, 0].imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        axs[0, 0].set_title('Imagen Original')
+
+        axs[0, 1].imshow(imBn, cmap='gray')
         for i in range(numObjetosMostrados):
-            plt.plot(contornos[i][:, 0, 0], contornos[i][:, 0, 1], 'r', linewidth=1)
-        plt.title('Escala binaria con contornos')
+            axs[0, 1].plot(contornos[i][:, 0, 0], contornos[i][:, 0, 1], 'r', linewidth=1)
+        axs[0, 1].set_title('Escala binaria con contornos')
 
-        # Mostrar la escala de grises
-        plt.subplot(2, 2, 3)
-        plt.imshow(imgGray, cmap='gray')
-        plt.title('Escala de grises')
+        axs[1, 0].imshow(imgGray, cmap='gray')
+        axs[1, 0].set_title('Escala de grises')
 
-        # Mostrar contornos y centroides
-        plt.subplot(2, 2, 4)
-        plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        axs[1, 1].imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         for i in range(numObjetosMostrados):
-            plt.plot(contornos[i][:, 0, 0], contornos[i][:, 0, 1], 'r', linewidth=1)
-            
+            axs[1, 1].plot(contornos[i][:, 0, 0], contornos[i][:, 0, 1], 'r', linewidth=1)
             M = cv2.moments(contornos[i])
             if M['m00'] != 0:
                 x = int(M['m10']/M['m00'])
                 y = int(M['m01']/M['m00'])
-                plt.plot(x, y, 'r*', markersize=10)
+                axs[1, 1].plot(x, y, 'r*', markersize=10)
+        axs[1, 1].set_title('Contornos y centroides')
 
-        plt.title('Contornos y centroides para los primeros 5 objetos de mayor área')
-        plt.show()
+        for ax in axs.flat:
+            ax.label_outer()
+
+        canvas = FigureCanvasTkAgg(fig, master=self.canvas)
+        canvas_widget = canvas.get_tk_widget()
+        canvas_widget.pack()
+        canvas.draw()
+
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.title("Selector de Imagen para Procesamiento")
-    boton_cargar = tk.Button(root, text="Cargar y Procesar Imagen", command=cargar_y_procesar_imagen)
-    boton_cargar.pack(pady=20)
+    app = ImageProcessorApp(root)
     root.mainloop()

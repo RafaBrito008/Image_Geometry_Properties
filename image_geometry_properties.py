@@ -36,9 +36,10 @@ class ImageProcessorApp:
 
     def process_image(self):
         img = cv2.imread(self.image_path)
+        threshold_value = 170
 
         imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        _, imBn = cv2.threshold(imgGray, 128, 255, cv2.THRESH_BINARY)
+        _, imBn = cv2.threshold(imgGray, threshold_value, 255, cv2.THRESH_BINARY)
         imBn = cv2.bitwise_not(imBn)
         contornos, _ = cv2.findContours(imBn, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 

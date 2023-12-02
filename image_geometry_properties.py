@@ -41,6 +41,11 @@ class ImageProcessorApp:
         _, imBn = cv2.threshold(imgGray, 128, 255, cv2.THRESH_BINARY)
         imBn = cv2.bitwise_not(imBn)
         contornos, _ = cv2.findContours(imBn, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        # Filtrar contornos que son demasiado pequeños
+        min_contour_area = 150  # Define un umbral mínimo para el área del contorno
+        contornos = [cnt for cnt in contornos if cv2.contourArea(cnt) > min_contour_area]
+
         contornos = sorted(contornos, key=cv2.contourArea, reverse=True)
 
         fig, axs = plt.subplots(2, 2)

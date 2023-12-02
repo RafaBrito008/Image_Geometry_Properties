@@ -14,14 +14,20 @@ class ImageProcessorApp:
         self.setup_ui()
 
     def setup_ui(self):
-        self.frame = tk.Frame(self.root)
-        self.frame.pack(padx=10, pady=10)
+            self.frame = tk.Frame(self.root)
+            self.frame.pack(padx=10, pady=10)
 
-        self.button_load = tk.Button(self.frame, text="Cargar Imagen", command=self.load_image)
-        self.button_load.pack(side=tk.TOP, pady=5)
+            self.button_load = tk.Button(self.frame, text="Cargar Imagen", command=self.load_image)
+            self.button_load.pack(side=tk.TOP, pady=5)
 
-        self.canvas = tk.Canvas(self.root, width=600, height=600)
-        self.canvas.pack()
+            self.canvas = tk.Canvas(self.root, width=600, height=600)
+            self.canvas.pack()
+
+            self.root.protocol("WM_DELETE_WINDOW", self.on_close)  # Vincular el evento de cierre
+
+    def on_close(self):
+        self.root.quit()
+        self.root.destroy()
 
     def load_image(self):
         self.image_path = filedialog.askopenfilename(filetypes=[("Archivos de imagen", "*.jpg;*.png;*.jpeg")])

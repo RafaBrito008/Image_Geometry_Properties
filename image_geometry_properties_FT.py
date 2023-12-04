@@ -68,10 +68,14 @@ class ImageProcessorApp:
         img_binary_inv = cv2.bitwise_not(img_binary)
 
         # Detectar los contornos en la imagen binaria invertida. OpenCV busca contornos desde los píxeles blancos.
-        contornos, _ = cv2.findcontornos(img_binary_inv, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contornos, _ = cv2.findcontornos(
+            img_binary_inv, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+        )
 
         # Filtrar los contornos para eliminar aquellos que son demasiado pequeños, basándose en el área mínima definida.
-        contornos = [cnt for cnt in contornos if cv2.contourArea(cnt) > min_contour_area]
+        contornos = [
+            cnt for cnt in contornos if cv2.contourArea(cnt) > min_contour_area
+        ]
 
         # Ordenar los contornos detectados por su área, de mayor a menor.
         contornos = sorted(contornos, key=cv2.contourArea, reverse=True)
@@ -82,25 +86,25 @@ class ImageProcessorApp:
         # Mostrar la imagen original en el primer subplot.
         axs[0, 0].imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         axs[0, 0].set_title("Imagen Original")
-        axs[0, 0].axis('off')  # Ocultar los ejes para una mejor visualización.
+        axs[0, 0].axis("off")  # Ocultar los ejes para una mejor visualización.
 
         # Mostrar la imagen binaria invertida en el segundo subplot y dibujar los contornos encontrados.
-        axs[0, 1].imshow(img_binary_inv, cmap='gray')
+        axs[0, 1].imshow(img_binary_inv, cmap="gray")
         axs[0, 1].set_title("Escala binaria con contornos")
-        axs[0, 1].axis('off')
+        axs[0, 1].axis("off")
         for contour in contornos:
             # Dibujar el contorno en rojo sobre la imagen binaria invertida.
             axs[0, 1].plot(contour[:, 0, 0], contour[:, 0, 1], "r", linewidth=1)
 
         # Mostrar la imagen en escala de grises en el tercer subplot.
-        axs[1, 0].imshow(img_gray, cmap='gray')
+        axs[1, 0].imshow(img_gray, cmap="gray")
         axs[1, 0].set_title("Escala de grises")
-        axs[1, 0].axis('off')
+        axs[1, 0].axis("off")
 
         # Mostrar la imagen original en el cuarto subplot y dibujar los contornos y centroides.
         axs[1, 1].imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         axs[1, 1].set_title("Contornos y centroides")
-        axs[1, 1].axis('off')
+        axs[1, 1].axis("off")
         for contour in contornos:
             # Dibujar el contorno en rojo sobre la imagen original.
             axs[1, 1].plot(contour[:, 0, 0], contour[:, 0, 1], "r", linewidth=1)
@@ -120,7 +124,6 @@ class ImageProcessorApp:
         canvas_widget = canvas.get_tk_widget()
         canvas_widget.pack(fill=tk.BOTH, expand=True)
         canvas.draw()
-
 
 
 # Bloque principal para ejecutar la aplicación

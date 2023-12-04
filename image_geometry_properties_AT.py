@@ -51,8 +51,8 @@ class ImageProcessorApp:
 
     def process_image(self):
         # Parámetros configurables para el procesamiento de la imagen
-        adaptive_method = cv2.ADAPTIVE_THRESH_GAUSSIAN_C  # Método de umbralización adaptativa (cv2.ADAPTIVE_THRESH_MEAN_C / cv2.ADAPTIVE_THRESH_GAUSSIAN_C).
-        threshold_type = cv2.THRESH_BINARY  # Tipo de umbral (cv2.THRESH_BINARY / cv2.THRESH_BINARY_INV).
+        adaptive_method = cv2.ADAPTIVE_THRESH_GAUSSIAN_C # Método de umbralización adaptativa (cv2.ADAPTIVE_THRESH_MEAN_C / cv2.ADAPTIVE_THRESH_GAUSSIAN_C).
+        threshold_type = cv2.THRESH_BINARY # Tipo de umbral (cv2.THRESH_BINARY / cv2.THRESH_BINARY_INV).
         block_size = 11  # Tamaño del bloque para la umbralización adaptativa. Debe ser un número impar.
         subtract_constant = 2  # Constante a restar del cálculo del umbral. Este valor se resta del cálculo del umbral y puede ser positivo o negativo.
         min_contour_area = 150  # Área mínima para considerar un contorno
@@ -65,21 +65,30 @@ class ImageProcessorApp:
 
         # Aplicar umbralización adaptativa a la imagen en escala de grises.
         # Esto permite ajustar el umbral para diferentes áreas de la imagen.
-        img_binary = cv2.adaptiveThreshold(img_gray, 255, adaptive_method, 
-                                           threshold_type, block_size, subtract_constant)
+        img_binary = cv2.adaptiveThreshold(
+            img_gray,
+            255,
+            adaptive_method,
+            threshold_type,
+            block_size,
+            subtract_constant,
+        )
 
         # Invertir la imagen binaria para la detección de contornos en OpenCV.
         img_binary_inv = cv2.bitwise_not(img_binary)
 
         # Detectar los contornos en la imagen binaria invertida.
-        contornos, _ = cv2.findContours(img_binary_inv, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contornos, _ = cv2.findContours(
+            img_binary_inv, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+        )
 
         # Filtrar contornos por área mínima.
-        contornos = [cnt for cnt in contornos if cv2.contourArea(cnt) > min_contour_area]
+        contornos = [
+            cnt for cnt in contornos if cv2.contourArea(cnt) > min_contour_area
+        ]
 
         # Ordenar los contornos por su área, de mayor a menor.
         contornos = sorted(contornos, key=cv2.contourArea, reverse=True)
-
 
         # Crear una figura con 4 subplots (2x2) para mostrar diferentes transformaciones de la imagen.
         fig, axs = plt.subplots(2, 2)
@@ -87,25 +96,25 @@ class ImageProcessorApp:
         # Mostrar la imagen original en el primer subplot.
         axs[0, 0].imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         axs[0, 0].set_title("Imagen Original")
-        axs[0, 0].axis('off')  # Ocultar los ejes para una mejor visualización.
+        axs[0, 0].axis("off")  # Ocultar los ejes para una mejor visualización.
 
         # Mostrar la imagen binaria invertida en el segundo subplot y dibujar los contornos encontrados.
-        axs[0, 1].imshow(img_binary_inv, cmap='gray')
+        axs[0, 1].imshow(img_binary_inv, cmap="gray")
         axs[0, 1].set_title("Escala binaria con contornos")
-        axs[0, 1].axis('off')
+        axs[0, 1].axis("off")
         for contour in contornos:
             # Dibujar el contorno en rojo sobre la imagen binaria invertida.
             axs[0, 1].plot(contour[:, 0, 0], contour[:, 0, 1], "r", linewidth=1)
 
         # Mostrar la imagen en escala de grises en el tercer subplot.
-        axs[1, 0].imshow(img_gray, cmap='gray')
+        axs[1, 0].imshow(img_gray, cmap="gray")
         axs[1, 0].set_title("Escala de grises")
-        axs[1, 0].axis('off')
+        axs[1, 0].axis("off")
 
         # Mostrar la imagen original en el cuarto subplot y dibujar los contornos y centroides.
         axs[1, 1].imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         axs[1, 1].set_title("Contornos y centroides")
-        axs[1, 1].axis('off')
+        axs[1, 1].axis("off")
         for contour in contornos:
             # Dibujar el contorno en rojo sobre la imagen original.
             axs[1, 1].plot(contour[:, 0, 0], contour[:, 0, 1], "r", linewidth=1)
@@ -125,7 +134,6 @@ class ImageProcessorApp:
         canvas_widget = canvas.get_tk_widget()
         canvas_widget.pack(fill=tk.BOTH, expand=True)
         canvas.draw()
-
 
 
 # Bloque principal para ejecutar la aplicación

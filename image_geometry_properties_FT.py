@@ -68,7 +68,7 @@ class ImageProcessorApp:
         img_binary_inv = cv2.bitwise_not(img_binary)
 
         # Detectar los contornos en la imagen binaria invertida. OpenCV busca contornos desde los píxeles blancos.
-        contornos, _ = cv2.findcontornos(
+        contornos, _ = cv2.findContours(
             img_binary_inv, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
         )
 

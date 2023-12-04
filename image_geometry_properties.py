@@ -28,7 +28,7 @@ class ImageProcessorApp:
 
         # Crear un lienzo para mostrar imágenes
         self.canvas = tk.Canvas(self.root, width=600, height=600)
-        self.canvas.pack()  # Empaquetar el lienzo en la ventana principal
+        self.canvas.pack(fill=tk.BOTH, expand=True)  # Empaquetar el lienzo en la ventana principal
 
         # Vincular el evento de cierre de la ventana
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -111,7 +111,7 @@ class ImageProcessorApp:
         # Crear un canvas para Matplotlib en Tkinter y mostrar la figura
         canvas = FigureCanvasTkAgg(fig, master=self.canvas)
         canvas_widget = canvas.get_tk_widget()
-        canvas_widget.pack()  # Empaquetar el widget del canvas
+        canvas_widget.pack(fill=tk.BOTH, expand=True)  # Empaquetar el widget del canvas
         canvas.draw()  # Dibujar el canvas
 
 

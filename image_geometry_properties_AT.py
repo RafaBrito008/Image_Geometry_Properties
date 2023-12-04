@@ -51,12 +51,10 @@ class ImageProcessorApp:
 
     def process_image(self):
         # Parámetros configurables para el procesamiento de la imagen
-        # Parámetros configurables para el procesamiento de la imagen
-        max_threshold_value = 255  # Valor máximo para umbralización
-        adaptive_method = cv2.ADAPTIVE_THRESH_GAUSSIAN_C  # Método de umbralización adaptativa
-        threshold_type = cv2.THRESH_BINARY  # Tipo de umbral
-        block_size = 11  # Tamaño del bloque para la umbralización adaptativa
-        subtract_constant = 2  # Constante a restar del cálculo del umbral
+        adaptive_method = cv2.ADAPTIVE_THRESH_GAUSSIAN_C  # Método de umbralización adaptativa (cv2.ADAPTIVE_THRESH_MEAN_C / cv2.ADAPTIVE_THRESH_GAUSSIAN_C).
+        threshold_type = cv2.THRESH_BINARY  # Tipo de umbral (cv2.THRESH_BINARY / cv2.THRESH_BINARY_INV).
+        block_size = 11  # Tamaño del bloque para la umbralización adaptativa. Debe ser un número impar.
+        subtract_constant = 2  # Constante a restar del cálculo del umbral. Este valor se resta del cálculo del umbral y puede ser positivo o negativo.
         min_contour_area = 150  # Área mínima para considerar un contorno
 
         # Cargar la imagen desde la ruta especificada. OpenCV por defecto carga las imágenes en formato BGR.
@@ -67,7 +65,7 @@ class ImageProcessorApp:
 
         # Aplicar umbralización adaptativa a la imagen en escala de grises.
         # Esto permite ajustar el umbral para diferentes áreas de la imagen.
-        img_binary = cv2.adaptiveThreshold(img_gray, max_threshold_value, adaptive_method, 
+        img_binary = cv2.adaptiveThreshold(img_gray, 255, adaptive_method, 
                                            threshold_type, block_size, subtract_constant)
 
         # Invertir la imagen binaria para la detección de contornos en OpenCV.

@@ -1,4 +1,4 @@
-# Overview
+## Overview
 ImageProcessorApp is a Python application designed for basic image processing. It provides a user interface to load and process images using various techniques, including grayscale conversion, adaptive thresholding, contour detection, and visualization of image transformations.
 
 ## Features
@@ -17,3 +17,7 @@ ImageProcessorApp is a Python application designed for basic image processing. I
 - OpenCV (cv2): For advanced image processing functionalities.
 - NumPy: For numerical operations on images.
 - Matplotlib: For plotting and visualizing images and transformations.
+
+
+## Usage
+Run the script in a Python environment. The GUI will allow you to load an image and automatically process and display it in various formats.
